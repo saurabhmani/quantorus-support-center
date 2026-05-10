@@ -1114,6 +1114,14 @@ function _dcnpgettext($domain, $context, $singular, $plural, $category, $n) {
         ->npgettext($context, $singular, $plural, $n);
 }
 
+// Namespace-safe translation alias used by namespaced classes (e.g. osTicket\Mail\Mailer).
+// Within a namespace, bare function calls like _S() resolve to the current namespace
+// (e.g. osTicket\Mail\_S) unless the call is prefixed with \. This global alias
+// allows callers inside namespaces to use \_S() to reach this global function.
+function _S($msgid) {
+    return _gettext($msgid);
+}
+
 // Custom data translations
 function _H($tag) {
     return substr(md5($tag), -16);

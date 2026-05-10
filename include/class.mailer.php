@@ -484,7 +484,7 @@ class Mailer {
                 }
             } catch(\Exception $ex) {
                 $this->logWarning(sprintf("%s1\$s: %2\$s\n\n%3\$s\n",
-                        _S("Unable to add email recipient"),
+                        \_S("Unable to add email recipient"),
                         ($recipient instanceof EmailContact)
                             ? $recipient->getEmailAddress()
                             : (string) $recipient,
@@ -548,7 +548,7 @@ class Mailer {
                         return $match[0].$domain;
                     }  catch(\Exception $ex) {
                          $self->logWarning(sprintf("%1\$s:%2\$s\n\n%3\$s\n",
-                                     _S("Unable to retrieve email inline image"),
+                                     \_S("Unable to retrieve email inline image"),
                                      $match[1].$domain,
                                      $ex->getMessage()));
                     }
@@ -570,7 +570,7 @@ class Mailer {
                     $message->addAttachment($file, $filename);
                 } catch(\Exception $ex) {
                     $this->logWarning(sprintf("%1\$s:%2\$s\n\n%3\$s\n",
-                                     _S("Unable to retrieve email attachment"),
+                                     \_S("Unable to retrieve email attachment"),
                                      $filename,
                                      $ex->getMessage()));
                 }
@@ -602,7 +602,7 @@ class Mailer {
             } catch (\Exception $ex) {
                 // Log the SMTP error
                 $this->logError(sprintf("%1\$s: %2\$s (%3\$s)\n\n%4\$s\n",
-                        _S("Unable to email via SMTP"),
+                        \_S("Unable to email via SMTP"),
                         $smtpAccount->getEmail()->getEmail(),
                         $smtpAccount->getHostInfo(),
                         $ex->getMessage()
@@ -632,7 +632,7 @@ class Mailer {
                 return $message->getId();
         } catch (\Exception $ex) {
             $this->logError(sprintf("%1\$s\n\n%2\$s\n",
-                        _S("Unable to email via Sendmail"),
+                        \_S("Unable to email via Sendmail"),
                         $ex->getMessage()
                 ));
         }
@@ -648,11 +648,11 @@ class Mailer {
         // No email alerts on email errors
         switch ($type) {
             case 'error':
-                return $ost->logError(_S('Mailer Error'), $msg, false);
+                return $ost->logError(\_S('Mailer Error'), $msg, false);
                 break;
             case 'warning':
             default:
-                return $ost->logWarning(_S('Mailer Warning'), $msg, false);
+                return $ost->logWarning(\_S('Mailer Warning'), $msg, false);
         }
         return false;
     }
