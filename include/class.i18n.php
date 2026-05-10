@@ -570,42 +570,65 @@ class Internationalization {
         // ::setLocaleForUser() later for web requests. See #2910
         TextDomain::setLocale(LC_ALL, 'en_US.UTF-8');
 
-        // User-specific translations
-        function _N($msgid, $plural, $n) {
-            return TextDomain::lookup()->getTranslation()
-                ->ngettext($msgid, $plural, is_numeric($n) ? $n : 1);
+        // Plural translation: returns singular or plural form based on $n
+        if (!function_exists('_N')) {
+            function _N($msgid, $plural, $n) {
+                return TextDomain::lookup()->getTranslation()
+                    ->ngettext($msgid, $plural, is_numeric($n) ? $n : 1);
+            }
         }
 
-        // System-specific translations
-        function _S($msgid) {
-            global $cfg;
-            return __($msgid);
-        }
-        function _NS($msgid, $plural, $count) {
-            global $cfg;
-        }
-
-        // Phrases with separate contexts
-        function _P($context, $msgid) {
-            return TextDomain::lookup()->getTranslation()
-                ->pgettext($context, $msgid);
-        }
-        function _NP($context, $singular, $plural, $n) {
-            return TextDomain::lookup()->getTranslation()
-                ->npgettext($context, $singular, $plural, is_numeric($n) ? $n : 1);
+        // System-specific translation alias. Defined here as a guard in case
+        // class.translation.php was not loaded yet; normally _S() is already
+        // defined there and this block is safely skipped.
+        if (!function_exists('_S')) {
+            function _S($msgid) {
+                return __($msgid);
+            }
         }
 
-        // Language-specific translations
-        function _L($msgid, $locale) {
-            return TextDomain::lookup()->getTranslation($locale)
-                ->translate($msgid);
+        // Plural system translation
+        if (!function_exists('_NS')) {
+            function _NS($msgid, $plural, $count) {
+                return TextDomain::lookup()->getTranslation()
+                    ->ngettext($msgid, $plural, is_numeric($count) ? $count : 1);
+            }
         }
-        function _NL($msgid, $plural, $n, $locale) {
-            return TextDomain::lookup()->getTranslation($locale)
-                ->ngettext($msgid, $plural, is_numeric($n) ? $n : 1);
+
+        // Context-aware (pgettext) translation
+        if (!function_exists('_P')) {
+            function _P($context, $msgid) {
+                return TextDomain::lookup()->getTranslation()
+                    ->pgettext($context, $msgid);
+            }
+        }
+
+        // Context-aware plural (npgettext) translation
+        if (!function_exists('_NP')) {
+            function _NP($context, $singular, $plural, $n) {
+                return TextDomain::lookup()->getTranslation()
+                    ->npgettext($context, $singular, $plural, is_numeric($n) ? $n : 1);
+            }
+        }
+
+        // Locale-specific singular translation
+        if (!function_exists('_L')) {
+            function _L($msgid, $locale) {
+                return TextDomain::lookup()->getTranslation(LC_MESSAGES, $locale)
+                    ->translate($msgid);
+            }
+        }
+
+        // Locale-specific plural translation
+        if (!function_exists('_NL')) {
+            function _NL($msgid, $plural, $n, $locale) {
+                return TextDomain::lookup()->getTranslation(LC_MESSAGES, $locale)
+                    ->ngettext($msgid, $plural, is_numeric($n) ? $n : 1);
+            }
         }
     }
-}
+
+} // end class Internationalization
 
 class DataTemplate {
     // Base folder for default data and templates
