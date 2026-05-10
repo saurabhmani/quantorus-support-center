@@ -1,0 +1,513 @@
+/* ============================================================
+   atlas-refine.css
+   Polish & refinement layer for the Atlas theme.
+   Loaded AFTER atlas-theme.css and atlas-tickets.css so it
+   wins the cascade and adds the Apple/Linear/Stripe-grade
+   finish — multi-layer shadows, refined motion curves, glow
+   active rails, custom scrollbars, skeletons, and a
+   collapsible sidebar.
+   ============================================================ */
+
+/* ============================================================
+   0. Refined design tokens (overrides loose ones in atlas-theme)
+   ============================================================ */
+:root {
+  /* Multi-layer shadows — the single biggest "premium" lever */
+  --atl-shadow-xs: 0 1px 1px rgba(15,23,42,.04);
+  --atl-shadow-sm: 0 1px 2px rgba(15,23,42,.05), 0 1px 3px rgba(15,23,42,.04);
+  --atl-shadow-md:
+       0 1px 2px rgba(15,23,42,.04),
+       0 4px 8px rgba(15,23,42,.05),
+       0 12px 28px -6px rgba(15,23,42,.05);
+  --atl-shadow-lg:
+       0 1px 2px rgba(15,23,42,.04),
+       0 8px 16px rgba(15,23,42,.06),
+       0 24px 48px -12px rgba(15,23,42,.10);
+  --atl-shadow-xl:
+       0 1px 2px rgba(15,23,42,.04),
+       0 12px 24px rgba(15,23,42,.06),
+       0 36px 72px -18px rgba(15,23,42,.16);
+  --atl-shadow-glow: 0 0 0 4px rgba(37,99,235,.10), 0 8px 24px -8px rgba(37,99,235,.45);
+
+  /* Refined surfaces — slightly warmer than pure greyscale */
+  --atl-bg:        #f5f7fb;
+  --atl-surface:   #ffffff;
+  --atl-surface-2: #f8fafd;
+
+  /* Inner highlight for cards (the "Stripe sheen") */
+  --atl-inset:     inset 0 1px 0 rgba(255,255,255,.6);
+
+  /* Motion */
+  --atl-ease-out: cubic-bezier(.22,.61,.36,1);
+  --atl-ease-spring: cubic-bezier(.34,1.34,.5,1);
+  --atl-dur-1: 120ms;
+  --atl-dur-2: 200ms;
+  --atl-dur-3: 320ms;
+
+  /* Sidebar widths */
+  --atl-side-w:        260px;
+  --atl-side-w-min:    72px;
+  --atl-topbar-h:      60px;
+}
+
+/* Warmer dark surfaces — Linear/Vercel feel, not pure black */
+body[data-osp-theme="dark"] {
+  --atl-bg:        #0c1020;
+  --atl-surface:   #131830;
+  --atl-surface-2: #0f1428;
+  --atl-border:    #1f274a;
+  --atl-border-2:  #1a2240;
+  --atl-ink:       #e5e9f5;
+  --atl-ink-2:     #c1c8de;
+  --atl-muted:     #8b95b8;
+  --atl-faint:     #5d678c;
+  --atl-shadow-xs: 0 1px 1px rgba(0,0,0,.30);
+  --atl-shadow-sm: 0 1px 2px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.30);
+  --atl-shadow-md: 0 4px 12px rgba(0,0,0,.35), 0 12px 28px -6px rgba(0,0,0,.40);
+  --atl-shadow-lg: 0 8px 16px rgba(0,0,0,.40), 0 24px 48px -12px rgba(0,0,0,.55);
+  --atl-shadow-xl: 0 18px 40px rgba(0,0,0,.55), 0 36px 72px -18px rgba(0,0,0,.65);
+  --atl-inset:     inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* ============================================================
+   1. GLOBAL TYPE / FOCUS / SELECTION REFINEMENTS
+   ============================================================ */
+html, body {
+  font-feature-settings: "cv11", "ss01", "ss03", "tnum", "case";
+  letter-spacing: -.005em;
+}
+::selection      { background: rgba(37,99,235,.20); color: var(--atl-ink); }
+::-moz-selection { background: rgba(37,99,235,.20); color: var(--atl-ink); }
+
+/* Keyboard focus only — never on mouse click */
+*:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.22), 0 0 0 1px var(--atl-blue) !important;
+  border-radius: 8px;
+  transition: box-shadow var(--atl-dur-1) var(--atl-ease-out);
+}
+
+/* Custom scrollbars (WebKit + Firefox) — subtle but visible */
+* { scrollbar-width: thin; scrollbar-color: rgba(100,116,139,.35) transparent; }
+*::-webkit-scrollbar              { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track        { background: transparent; }
+*::-webkit-scrollbar-thumb        { background: rgba(100,116,139,.25); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover  { background: rgba(100,116,139,.45); background-clip: padding-box; border: 2px solid transparent; }
+
+/* ============================================================
+   2. SHELL — premium sidebar + topbar refinements
+   ============================================================ */
+body.atl-shell {
+  padding-left: var(--atl-side-w) !important;
+  padding-top:  var(--atl-topbar-h) !important;
+  transition: padding-left var(--atl-dur-3) var(--atl-ease-out);
+}
+body.atl-shell.atl-collapsed { padding-left: var(--atl-side-w-min) !important; }
+
+/* ---------- Sidebar surface ---------- */
+#atl-sidebar {
+  width: var(--atl-side-w) !important;
+  background: linear-gradient(180deg, var(--atl-surface) 0%, var(--atl-surface-2) 100%);
+  border-right: 1px solid var(--atl-border-2) !important;
+  box-shadow:
+       1px 0 0 rgba(15,23,42,.02),
+       6px 0 24px -10px rgba(15,23,42,.06);
+  padding: 14px 12px 16px !important;
+  display: flex;
+  flex-direction: column;
+  transition: width var(--atl-dur-3) var(--atl-ease-out);
+}
+body.atl-collapsed #atl-sidebar { width: var(--atl-side-w-min) !important; padding: 14px 10px 16px !important; }
+
+/* Brand block — workspace pill */
+#atl-sidebar .atl-brand {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px !important;
+  margin: 2px 2px 14px !important;
+  border-radius: 12px !important;
+  background: var(--atl-surface);
+  border: 1px solid var(--atl-border-2) !important;
+  box-shadow: var(--atl-shadow-xs), var(--atl-inset);
+  position: relative;
+  cursor: default;
+}
+#atl-sidebar .atl-brand-mark {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+  color: #fff;
+  display: grid; place-items: center;
+  box-shadow:
+       0 6px 16px -4px rgba(124,58,237,.45),
+       inset 0 1px 0 rgba(255,255,255,.30),
+       inset 0 -2px 4px rgba(0,0,0,.10);
+  flex: 0 0 auto;
+}
+#atl-sidebar .atl-brand-mark svg { width: 18px; height: 18px; }
+#atl-sidebar .atl-brand-text {
+  display: flex; flex-direction: column; line-height: 1.15;
+  min-width: 0; flex: 1;
+  transition: opacity var(--atl-dur-2) var(--atl-ease-out);
+}
+#atl-sidebar .atl-brand-name { font-weight: 700; font-size: 13px; color: var(--atl-ink); letter-spacing: -.012em; }
+#atl-sidebar .atl-brand-sub  { font-size: 11px; color: var(--atl-muted); }
+
+/* Collapse arrow */
+.atl-collapse {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--atl-border-2);
+  color: var(--atl-muted);
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: background var(--atl-dur-1) var(--atl-ease-out), color var(--atl-dur-1) var(--atl-ease-out);
+  flex: 0 0 auto;
+}
+.atl-collapse:hover { background: var(--atl-blue-50); color: var(--atl-blue-700); }
+.atl-collapse svg { width: 14px; height: 14px; transition: transform var(--atl-dur-3) var(--atl-ease-out); }
+body.atl-collapsed .atl-collapse svg { transform: rotate(180deg); }
+
+/* Body scroll area */
+#atl-sidebar .atl-side-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+
+/* Section labels */
+#atl-sidebar .atl-nav-label {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--atl-faint) !important;
+  padding: 14px 12px 6px !important;
+  transition: opacity var(--atl-dur-2) var(--atl-ease-out);
+}
+
+/* Nav item — premium row */
+#atl-sidebar .atl-nav { display: flex; flex-direction: column; gap: 1px; }
+#atl-sidebar .atl-nav-item {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--atl-ink-2) !important;
+  text-decoration: none !important;
+  transition: background var(--atl-dur-1) var(--atl-ease-out), color var(--atl-dur-1) var(--atl-ease-out);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#atl-sidebar .atl-nav-item:hover {
+  background: rgba(37,99,235,.06) !important;
+  color: var(--atl-ink) !important;
+}
+#atl-sidebar .atl-nav-item .atl-nav-ico {
+  width: 18px; height: 18px;
+  flex: 0 0 auto;
+  color: var(--atl-muted);
+  transition: color var(--atl-dur-1) var(--atl-ease-out), transform var(--atl-dur-2) var(--atl-ease-out);
+}
+#atl-sidebar .atl-nav-item:hover .atl-nav-ico { color: var(--atl-ink); transform: scale(1.06); }
+
+/* Animated active rail */
+#atl-sidebar .atl-rail {
+  position: absolute;
+  left: -4px; top: 50%;
+  width: 3px; height: 0;
+  background: linear-gradient(180deg, #2563eb 0%, #7c3aed 100%);
+  border-radius: 0 4px 4px 0;
+  transform: translateY(-50%);
+  transition: height var(--atl-dur-3) var(--atl-ease-spring);
+  box-shadow: 0 0 12px 0 rgba(37,99,235,.55);
+  pointer-events: none;
+}
+
+/* Active state */
+#atl-sidebar .atl-nav-item.is-active {
+  background: linear-gradient(90deg, rgba(37,99,235,.10) 0%, rgba(37,99,235,.04) 100%) !important;
+  color: var(--atl-blue-700) !important;
+  font-weight: 600 !important;
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,.10) !important;
+}
+#atl-sidebar .atl-nav-item.is-active .atl-nav-ico { color: var(--atl-blue-700); }
+#atl-sidebar .atl-nav-item.is-active .atl-rail   { height: 22px; }
+
+/* Tooltip when collapsed */
+body.atl-collapsed #atl-sidebar .atl-nav-text,
+body.atl-collapsed #atl-sidebar .atl-nav-label,
+body.atl-collapsed #atl-sidebar .atl-brand-text,
+body.atl-collapsed #atl-sidebar .atl-side-foot { opacity: 0; pointer-events: none; visibility: hidden; }
+
+body.atl-collapsed #atl-sidebar .atl-nav-item { justify-content: center; padding: 10px 0 !important; }
+body.atl-collapsed #atl-sidebar .atl-nav-item::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--atl-ink);
+  color: #fff;
+  font-size: 12px; font-weight: 600;
+  padding: 6px 10px; border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--atl-dur-1) var(--atl-ease-out);
+  box-shadow: var(--atl-shadow-md);
+  z-index: 200;
+}
+body.atl-collapsed #atl-sidebar .atl-nav-item:hover::after { opacity: 1; }
+
+/* Sidebar footer — service health pill */
+#atl-sidebar .atl-side-foot {
+  margin-top: 12px !important;
+  padding: 12px 12px 4px !important;
+  border-top: 1px solid var(--atl-border-2) !important;
+  display: flex !important;
+  flex-direction: column;
+  gap: 6px;
+}
+#atl-sidebar .atl-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600;
+  color: var(--atl-ink-2);
+}
+#atl-sidebar .atl-status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16,185,129,.55);
+  animation: atl-pulse 1.8s ease-out infinite;
+}
+#atl-sidebar .atl-status-meta { font-size: 10px; color: var(--atl-faint); letter-spacing: .04em; text-transform: uppercase; }
+
+@keyframes atl-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(16,185,129,.50); }
+  70%  { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+/* ---------- Topbar ---------- */
+#atl-topbar {
+  height: var(--atl-topbar-h) !important;
+  left: var(--atl-side-w) !important;
+  background: rgba(255,255,255,.78) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--atl-border-2) !important;
+  box-shadow: 0 1px 0 rgba(15,23,42,.02);
+  padding: 0 28px !important;
+  transition: left var(--atl-dur-3) var(--atl-ease-out);
+}
+body.atl-collapsed #atl-topbar { left: var(--atl-side-w-min) !important; }
+body[data-osp-theme="dark"] #atl-topbar { background: rgba(19,24,48,.78) !important; }
+
+#atl-topbar .atl-crumbs { font-size: 13.5px !important; gap: 10px !important; }
+#atl-topbar .atl-crumbs a {
+  padding: 4px 10px; border-radius: 7px;
+  transition: background var(--atl-dur-1) var(--atl-ease-out);
+}
+#atl-topbar .atl-crumbs a:hover { background: var(--atl-blue-50); color: var(--atl-blue-700) !important; }
+#atl-topbar .atl-crumbs .atl-current { letter-spacing: -.005em; }
+
+#atl-topbar .atl-icon-btn {
+  width: 36px; height: 36px !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--atl-border-2) !important;
+  background: var(--atl-surface) !important;
+  box-shadow: var(--atl-shadow-xs), var(--atl-inset);
+  transition: transform var(--atl-dur-1) var(--atl-ease-out), border-color var(--atl-dur-1) var(--atl-ease-out), color var(--atl-dur-1) var(--atl-ease-out);
+}
+#atl-topbar .atl-icon-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--atl-blue) !important;
+  color: var(--atl-blue-700) !important;
+  box-shadow: var(--atl-shadow-sm);
+}
+#atl-topbar .atl-icon-btn svg { width: 16px; height: 16px; }
+
+#atl-topbar .atl-user {
+  height: 36px !important;
+  padding: 4px 12px 4px 4px !important;
+  border-radius: 999px !important;
+  background: var(--atl-surface) !important;
+  border: 1px solid var(--atl-border-2) !important;
+  box-shadow: var(--atl-shadow-xs), var(--atl-inset);
+  transition: transform var(--atl-dur-1) var(--atl-ease-out), border-color var(--atl-dur-1) var(--atl-ease-out);
+}
+#atl-topbar .atl-user:hover { transform: translateY(-1px); border-color: var(--atl-blue) !important; }
+#atl-topbar .atl-avatar {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+  box-shadow:
+       0 4px 12px -3px rgba(124,58,237,.45),
+       inset 0 1px 0 rgba(255,255,255,.30);
+}
+#atl-topbar .atl-user-name { font-weight: 600; }
+
+/* ============================================================
+   3. CONTENT CARD — refined surface
+   ============================================================ */
+body.atl-shell #content,
+.osp-card,
+.atl-card {
+  background: var(--atl-surface) !important;
+  border: 1px solid var(--atl-border-2) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--atl-shadow-md), var(--atl-inset) !important;
+  position: relative;
+}
+
+/* Premium card hover lift (dashboard KPIs etc.) */
+.osp-kpi {
+  border-radius: 16px !important;
+  transition: transform var(--atl-dur-2) var(--atl-ease-out),
+              box-shadow var(--atl-dur-2) var(--atl-ease-out),
+              border-color var(--atl-dur-2) var(--atl-ease-out) !important;
+}
+.osp-kpi:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--atl-shadow-lg), var(--atl-inset) !important;
+  border-color: rgba(37,99,235,.30) !important;
+}
+
+/* Refined chart card stroke + inner sheen */
+.osp-card { box-shadow: var(--atl-shadow-md), var(--atl-inset) !important; border-radius: 16px !important; }
+
+/* ============================================================
+   4. BUTTONS — spring micro-interaction
+   ============================================================ */
+.button, .action-button, input[type="submit"], input[type="button"] {
+  transition:
+    transform var(--atl-dur-1) var(--atl-ease-spring),
+    background var(--atl-dur-1) var(--atl-ease-out),
+    border-color var(--atl-dur-1) var(--atl-ease-out),
+    box-shadow var(--atl-dur-1) var(--atl-ease-out),
+    color var(--atl-dur-1) var(--atl-ease-out) !important;
+}
+.button:hover, .action-button:hover, input[type="submit"]:hover {
+  transform: translateY(-1px);
+}
+input[type="submit"], .button.primary, .action-button.primary {
+  box-shadow:
+    0 1px 2px rgba(37,99,235,.10),
+    0 6px 16px -4px rgba(37,99,235,.40),
+    inset 0 1px 0 rgba(255,255,255,.20) !important;
+}
+input[type="submit"]:hover, .button.primary:hover, .action-button.primary:hover {
+  box-shadow:
+    0 1px 2px rgba(37,99,235,.10),
+    0 12px 24px -4px rgba(37,99,235,.45),
+    inset 0 1px 0 rgba(255,255,255,.20) !important;
+}
+
+/* ============================================================
+   5. TABLES — refined zebra + hover
+   ============================================================ */
+table.list, table.list.queue.tickets {
+  box-shadow: var(--atl-shadow-sm), var(--atl-inset) !important;
+}
+table.list tbody tr {
+  transition: background var(--atl-dur-1) var(--atl-ease-out);
+}
+table.list tbody tr:hover td {
+  background: linear-gradient(90deg, rgba(37,99,235,.04) 0%, rgba(124,58,237,.03) 100%) !important;
+}
+
+/* ============================================================
+   6. SLA / STATUS CHIP REFINEMENT
+   ============================================================ */
+.atl-pill, .osp-pill, .osp-chip {
+  font-feature-settings: "tnum", "case";
+  text-rendering: optimizeLegibility;
+}
+.osp-kpi-delta, .atl-pill, .osp-pill {
+  box-shadow: inset 0 0 0 1px rgba(15,23,42,.04);
+}
+body[data-osp-theme="dark"] .osp-kpi-delta,
+body[data-osp-theme="dark"] .atl-pill,
+body[data-osp-theme="dark"] .osp-pill { box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
+
+/* ============================================================
+   7. SKELETON LOADER — for any element that gains .atl-skel
+   ============================================================ */
+.atl-skel {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg,
+    var(--atl-border-2) 0%,
+    var(--atl-bg) 50%,
+    var(--atl-border-2) 100%);
+  background-size: 200% 100%;
+  animation: atl-shimmer 1.4s linear infinite;
+  border-radius: 8px;
+  color: transparent !important;
+  pointer-events: none;
+}
+@keyframes atl-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   8. EMPTY STATE — friendlier zero data layouts
+   ============================================================ */
+.atl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--atl-muted);
+}
+.atl-empty-ico {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--atl-blue-50), rgba(124,58,237,.08));
+  color: var(--atl-blue-700);
+  display: grid; place-items: center;
+  margin-bottom: 12px;
+  box-shadow: var(--atl-shadow-sm);
+}
+.atl-empty-title { font-size: 15px; font-weight: 700; color: var(--atl-ink); margin-bottom: 4px; letter-spacing: -.01em; }
+.atl-empty-meta  { font-size: 12.5px; max-width: 360px; line-height: 1.55; }
+
+/* ============================================================
+   9. RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  body.atl-shell { padding-left: 0 !important; }
+  body.atl-shell #atl-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--atl-shadow-xl);
+  }
+  body.atl-shell.atl-side-open #atl-sidebar { transform: translateX(0); }
+  body.atl-shell #atl-topbar { left: 0 !important; }
+}
+
+/* ============================================================
+   10. DASHBOARD-PAGE escape hatch (already in atlas-theme,
+       repeat here so refine layer doesn't accidentally reflow it)
+   ============================================================ */
+body:has(.osp-dashboard) #atl-sidebar,
+body:has(.osp-dashboard) #atl-topbar { display: none !important; }
+body:has(.osp-dashboard) { padding-left: 0 !important; padding-top: 0 !important; }
+
+/* ============================================================
+   11. PRINT — keep it usable
+   ============================================================ */
+@media print {
+  #atl-sidebar, #atl-topbar { display: none !important; }
+  body.atl-shell { padding: 0 !important; }
+  body.atl-shell #content { box-shadow: none !important; border: 0 !important; }
+}
