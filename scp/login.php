@@ -71,7 +71,13 @@ if ($_POST && isset($_POST['userid'])) {
     if (Validator::is_userid($username, $errors['err'], false)
         && ($user = StaffAuthenticationBackend::process($username,
             substr($_POST['passwd'], 0, 128), $errors))) {
-        $redirect($user->isValid() ? $dest : 'login.php');
+        if ($user->isValid()) {
+            session_write_close();
+            Http::redirect(ROOT_PATH . 'scp/');
+            exit;
+        } else {
+            Http::redirect('login.php');
+        }
     }
 
     $msg = $errors['err'] ?: __('Invalid login');
@@ -93,8 +99,11 @@ elseif ($_POST
 
     try {
         $form = $auth->getInputForm($_POST);
-        if ($form->isValid() && $auth->validate($form, $thisstaff))
-            $redirect($dest);
+        if ($form->isValid() && $auth->validate($form, $thisstaff)) {
+            session_write_close();
+            Http::redirect(ROOT_PATH . 'scp/');
+            exit;
+        }
     } catch (ExpiredOTP $ex) {
         // Expired or too many attempts
         $thisstaff->logOut();
@@ -123,13 +132,17 @@ elseif (isset($_GET['do'])) {
 elseif (!$thisstaff || !($thisstaff->getId() || $thisstaff->isValid())) {
     if (($user = StaffAuthenticationBackend::processSignOn($errors, false))
             && ($user instanceof StaffSession)) {
-        Http::redirect($dest);
+        session_write_close();
+        Http::redirect(ROOT_PATH . 'scp/');
+        exit;
     } else if (isset($_SESSION['_staff']['auth']['msg'])) {
         $msg = $_SESSION['_staff']['auth']['msg'];
     }
 }
 elseif ($thisstaff && $thisstaff->isValid()) {
-    Http::redirect($dest);
+    session_write_close();
+    Http::redirect(ROOT_PATH . 'scp/');
+    exit;
 }
 
 define("OSTSCPINC",TRUE); //Make includes happy!

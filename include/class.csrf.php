@@ -38,6 +38,8 @@ Class CSRF {
 
         $this->name = $name;
         $this->timeout = $timeout;
+        if (!isset($_SESSION['csrf']) || !is_array($_SESSION['csrf']))
+            $_SESSION['csrf'] = array();
         $this->csrf = &$_SESSION['csrf'];
     }
 
@@ -60,7 +62,7 @@ Class CSRF {
 
     function getToken() {
 
-        if ((!is_array($this->csrf) || !$this->csrf['token']) || $this->isExpired()) {
+        if (!is_array($this->csrf) || !isset($this->csrf['token']) || !$this->csrf['token'] || $this->isExpired()) {
             $this->rotate();
         } else {
             //Reset the timer

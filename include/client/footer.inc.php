@@ -1,10 +1,17 @@
+    </main>
+    <div id="footer">
+    <div class="footer-wrapper">
+        <div class="footer-brand">
+            <span>Quantorus365 Support</span>
+        </div>
+        <div class="footer-copyright">
+            &copy; <?php echo date('Y'); ?> <?php echo $ost->getConfig()->getTitle(); ?>. <?php echo __('All rights reserved.'); ?>
+        </div>
+        <div class="footer-powered">
+            <?php echo __('Powered by'); ?> osTicket
         </div>
     </div>
-    <div id="footer">
-        <p><?php echo __('Copyright &copy;'); ?> <?php echo date('Y'); ?> <?php
-        echo Format::htmlchars((string) $ost->company ?: 'osTicket.com'); ?> - <?php echo __('All rights reserved.'); ?></p>
-        <a id="poweredBy" href="https://osticket.com" target="_blank"><?php echo __('Helpdesk software - powered by osTicket'); ?></a>
-    </div>
+</div>
 <div id="overlay"></div>
 <div id="loading">
     <h4><?php echo __('Please Wait!');?></h4>

@@ -5320,16 +5320,27 @@ class FileUploadWidget extends Widget {
                 $field_id = 'task/attach';
         }
 
-        ?><div id="<?php echo $id;
-            ?>" class="filedrop"><div class="files"></div>
-            <div class="dropzone"><i class="icon-upload"></i>
-            <?php echo sprintf(
-                __('Drop files here or %s choose them %s'),
-                '<a href="#" class="manual">', '</a>'); ?>
-        <input type="file" multiple="multiple"
-            id="file-<?php echo $id; ?>" style="display:none;"
-            accept="<?php echo implode(',', $config['__mimetypes']); ?>"/>
-        </div></div>
+        ?><div id="<?php echo $id; ?>" class="filedrop">
+            <div class="files"></div>
+            <div class="dropzone">
+                <div class="upload-icon-container">
+                    <i class="icon-paperclip"></i>
+                </div>
+                <div class="upload-text-main">
+                    <?php echo sprintf(
+                        __('Drop files here or %s choose them %s'),
+                        '<a href="#" class="manual">', '</a>'); ?>
+                </div>
+                <div class="upload-text-support">
+                    <?php echo sprintf(__('Maximum file size: %dMB. Supported: %s'),
+                        $maxfilesize,
+                        strtoupper(implode(', ', $config['__extensions'] ?: array('ANY')))); ?>
+                </div>
+                <input type="file" multiple="multiple"
+                    id="file-<?php echo $id; ?>" style="display:none;"
+                    accept="<?php echo implode(',', $config['__mimetypes']); ?>"/>
+            </div>
+        </div>
         <script type="text/javascript">
         $(function(){$('#<?php echo $id; ?> .dropzone').filedropbox({
           url: 'ajax.php/form/upload/<?php echo $field_id; ?>',

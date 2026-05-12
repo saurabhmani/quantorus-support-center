@@ -114,7 +114,7 @@ class osTicket {
 
     function checkCSRFToken($name=false, $rotate=false) {
         $name = $name ?: $this->getCSRF()->getTokenName();
-        $token = $_POST[$name] ?: $_SERVER['HTTP_X_CSRFTOKEN'];
+        $token = $_POST[$name] ?? $_SERVER['HTTP_X_CSRFTOKEN'] ?? null;
         if ($token && $this->validateCSRFToken($token)) {
             if ($rotate) $this->getCSRF()->rotate();
             return true;

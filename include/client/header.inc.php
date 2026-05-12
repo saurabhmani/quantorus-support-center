@@ -45,6 +45,7 @@ if (osTicket::is_ie())
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/jquery-ui-timepicker-addon.css" media="all">
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/thread.css" media="screen">
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css" media="screen">
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/modern-client.css" media="screen">
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css">
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css"/>
@@ -86,6 +87,7 @@ if (osTicket::is_ie())
 <?php
     }
     ?>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/modern-register.css?v=7">
 </head>
 <body>
     <div id="container">
@@ -97,73 +99,46 @@ if (osTicket::is_ie())
         elseif($ost->getNotice())
             echo sprintf('<div class="notice_bar">%s</div>', $ost->getNotice());
         ?>
-        <div id="header">
-            <div class="pull-right flush-right">
-            <p>
-             <?php
-                if ($thisclient && is_object($thisclient) && $thisclient->isValid()
-                    && !$thisclient->isGuest()) {
-                 echo Format::htmlchars($thisclient->getName()).'&nbsp;|';
-                 ?>
-                <a href="<?php echo ROOT_PATH; ?>profile.php"><?php echo __('Profile'); ?></a> |
-                <a href="<?php echo ROOT_PATH; ?>tickets.php"><?php echo sprintf(__('Tickets <b>(%d)</b>'), $thisclient->getNumTickets()); ?></a> -
-                <a href="<?php echo $signout_url; ?>"><?php echo __('Sign Out'); ?></a>
-            <?php
-            } elseif($nav) {
-                if ($cfg->getClientRegistrationMode() == 'public') { ?>
-                    <?php echo __('Guest User'); ?> | <?php
-                }
-                if ($thisclient && $thisclient->isValid() && $thisclient->isGuest()) { ?>
-                    <a href="<?php echo $signout_url; ?>"><?php echo __('Sign Out'); ?></a><?php
-                }
-                elseif ($cfg->getClientRegistrationMode() != 'disabled') { ?>
-                    <a href="<?php echo $signin_url; ?>"><?php echo __('Sign In'); ?></a>
-<?php
-                }
-            } ?>
-            </p>
-            <p>
-<?php
-if (($all_langs = Internationalization::getConfiguredSystemLanguages())
-    && (count($all_langs) > 1)
-) {
-    $qs = array();
-    parse_str($_SERVER['QUERY_STRING'], $qs);
-    foreach ($all_langs as $code=>$info) {
-        list($lang, $locale) = explode('_', $code);
-        $qs['lang'] = $code;
-?>
-        <a class="flag flag-<?php echo strtolower($info['flag'] ?: $locale ?: $lang); ?>"
-            href="?<?php echo http_build_query($qs);
-            ?>" title="<?php echo Internationalization::getLanguageDescription($code); ?>">&nbsp;</a>
-<?php }
-} ?>
-            </p>
-            </div>
-            <a class="pull-left" id="logo" href="<?php echo ROOT_PATH; ?>index.php"
-            title="<?php echo __('Support Center'); ?>">
-                <span class="valign-helper"></span>
-                <img src="<?php echo ROOT_PATH; ?>logo.php" border=0 alt="<?php
-                echo $ost->getConfig()->getTitle(); ?>">
+    <header class="qs-navbar">
+        <div class="qs-navbar-inner">
+            <a class="qs-navbar-brand" href="<?php echo ROOT_PATH; ?>index.php">
+                <?php if ($cfg && $cfg->getClientLogoId()) { ?>
+                    <img
+                        src="<?php echo ROOT_PATH; ?>logo.php"
+                        alt="<?php echo Format::htmlchars($ost->getConfig()->getTitle()); ?>"
+                        class="qs-navbar-logo"
+                    >
+                <?php } else { ?>
+                    <div class="qs-navbar-fallback">
+                        <span class="qs-navbar-dot"></span>
+                        <span class="qs-navbar-title"><?php echo Format::htmlchars($ost->getConfig()->getTitle()); ?></span>
+                    </div>
+                <?php } ?>
             </a>
+
+            <nav class="qs-nav-links">
+                <ul id="nav">
+                    <li><a href="index.php" class="<?php echo ($section=='home')?'active':''; ?>"><?php echo __('Support Center Home'); ?></a></li>
+                    <li><a href="open.php" class="<?php echo ($section=='open')?'active':''; ?>"><?php echo __('Open a New Ticket'); ?></a></li>
+                    <li><a href="tickets.php" class="<?php echo ($section=='tickets')?'active':''; ?>"><?php echo __('Check Ticket Status'); ?></a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-area">
+                <?php if($thisclient && $thisclient->isValid()) {
+                    echo sprintf(__('Welcome, %s'), '<strong>'.$thisclient->getName().'</strong>');
+                    ?> | <a href="<?php echo $signout_url; ?>"><?php echo __('Sign Out'); ?></a>
+                <?php } else {
+                    if($cfg->getClientRegistrationMode() != 'disabled') { ?>
+                        <span class="qs-guest-label"><?php echo __('Guest User'); ?></span>
+                        <a href="<?php echo $signin_url; ?>" class="btn-signin"><?php echo __('Sign In'); ?></a>
+                    <?php }
+                } ?>
+            </div>
         </div>
-        <div class="clear"></div>
-        <?php
-        if($nav){ ?>
-        <ul id="nav" class="flush-left">
-            <?php
-            if($nav && ($navs=$nav->getNavLinks()) && is_array($navs)){
-                foreach($navs as $name =>$nav) {
-                    echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']),$nav['desc'],"\n");
-                }
-            } ?>
-        </ul>
-        <?php
-        }else{ ?>
-         <hr>
-        <?php
-        } ?>
-        <div id="content">
+    </header>
+        
+    <main class="qs-main">
 
          <?php if($errors['err']) { ?>
             <div id="msg_error"><?php echo $errors['err']; ?></div>

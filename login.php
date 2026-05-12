@@ -67,8 +67,9 @@ if ($_POST && isset($_POST['luser'])) {
             }
         }
         else {
-            Http::redirect($_SESSION['_client']['auth']['dest']
-                ?: 'tickets.php');
+            session_write_close();
+            Http::redirect(ROOT_PATH . 'tickets.php');
+            exit;
         }
     } elseif(!$errors['err']) {
         $errors['err'] = sprintf('%s - %s', __('Invalid username or password'), __('Please try again!'));
@@ -138,8 +139,9 @@ elseif ($user = UserAuthenticationBackend::processSignOn($errors, false)) {
         }
     }
     elseif ($user instanceof AuthenticatedUser) {
-        Http::redirect($_SESSION['_client']['auth']['dest']
-                ?: 'tickets.php');
+        session_write_close();
+        Http::redirect(ROOT_PATH . 'tickets.php');
+        exit;
     }
 }
 

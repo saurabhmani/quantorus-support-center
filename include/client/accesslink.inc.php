@@ -9,52 +9,125 @@ if ($cfg->isClientEmailVerificationRequired())
 else
     $button = __("View Ticket");
 ?>
-<h1><?php echo __('Check Ticket Status'); ?></h1>
-<p><?php
-echo __('Please provide your email address and a ticket number.');
-if ($cfg->isClientEmailVerificationRequired())
-    echo ' '.__('An access link will be emailed to you.');
-else
-    echo ' '.__('This will sign you in to view your ticket.');
-?></p>
-<form action="login.php" method="post" id="clientLogin">
-    <?php csrf_token(); ?>
-<div style="display:table-row">
-    <div class="login-box">
-    <div><strong><?php echo Format::htmlchars($errors['login']); ?></strong></div>
-    <div>
-        <label for="email"><?php echo __('Email Address'); ?>:
-        <input id="email" placeholder="<?php echo __('e.g. john.doe@osticket.com'); ?>" type="text"
-            name="lemail" size="30" value="<?php echo $email; ?>" class="nowarn"></label>
-    </div>
-    <div>
-        <label for="ticketno"><?php echo __('Ticket Number'); ?>:
-        <input id="ticketno" type="text" name="lticket" placeholder="<?php echo __('e.g. 051243'); ?>"
-            size="30" value="<?php echo $ticketid; ?>" class="nowarn"></label>
-    </div>
-    <p>
-        <input class="btn" type="submit" value="<?php echo $button; ?>">
-    </p>
-    </div>
-    <div class="instructions">
-<?php if ($cfg && $cfg->getClientRegistrationMode() !== 'disabled') { ?>
-        <?php echo __('Have an account with us?'); ?>
-        <a href="login.php"><?php echo __('Sign In'); ?></a> <?php
-    if ($cfg->isClientRegistrationEnabled()) { ?>
-<?php echo sprintf(__('or %s register for an account %s to access all your tickets.'),
-    '<a href="account.php?do=create">','</a>');
-    }
-}?>
-    </div>
+<div class="qs-status-page">
+    <!-- Minimal Navbar -->
+    <nav class="qs-navbar">
+        <div class="qs-nav-container">
+            <div class="qs-nav-logo">
+                <span class="qs-logo-text">Quantorus</span>
+                <span class="qs-logo-sub">Support</span>
+            </div>
+            <div class="qs-nav-center">
+                <a href="index.php" class="qs-nav-link"><?php echo __('Support Home'); ?></a>
+                <a href="kb/index.php" class="qs-nav-link"><?php echo __('Knowledge Base'); ?></a>
+                <a href="open.php" class="qs-nav-link"><?php echo __('Open Ticket'); ?></a>
+            </div>
+            <div class="qs-nav-right">
+                <a href="login.php" class="qs-nav-signin-btn"><?php echo __('Sign In'); ?></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Airy Hero Section -->
+    <header class="qs-hero">
+        <h1><?php echo __('Check Ticket Status'); ?></h1>
+        <p><?php
+        echo __('Please provide your email address and a ticket number.');
+        if ($cfg->isClientEmailVerificationRequired())
+            echo '<br>' . __('An access link will be emailed to you securely.');
+        ?></p>
+    </header>
+
+    <!-- Main Card (1120px) -->
+    <main class="qs-status-card">
+        <!-- Left Side: Form Panel -->
+        <section class="qs-status-form">
+            <div class="form-header">
+                <h2><?php echo __("Email Access Link"); ?></h2>
+                <p><?php echo __('Enter your details below to receive a secure link to your ticket dashboard.'); ?></p>
+            </div>
+
+            <?php if ($errors['login']) { ?>
+                <div class="qs-error-box">
+                    <i class="icon-warning-sign"></i>
+                    <span><?php echo Format::htmlchars($errors['login']); ?></span>
+                </div>
+            <?php } ?>
+
+            <form action="login.php" method="post" id="clientLogin">
+                <?php csrf_token(); ?>
+                
+                <div class="qs-input-wrapper">
+                    <div class="qs-input-inner">
+                        <i class="icon-envelope"></i>
+                        <input id="email" placeholder="<?php echo __('Email Address'); ?>" type="text"
+                            name="lemail" value="<?php echo $email; ?>" class="nowarn">
+                    </div>
+                </div>
+
+                <div class="qs-input-wrapper">
+                    <div class="qs-input-inner">
+                        <i class="icon-tag"></i>
+                        <input id="ticketno" type="text" name="lticket" placeholder="<?php echo __('Ticket Number'); ?>"
+                            value="<?php echo $ticketid; ?>" class="nowarn">
+                    </div>
+                </div>
+
+                <div class="qs-form-footer">
+                    <button type="submit" class="qs-btn-primary">
+                        <span><?php echo $button; ?></span>
+                        <i class="icon-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Right Side: Account Panel (Institutional White) -->
+        <aside class="qs-status-side">
+            <div class="lock-icon-badge">
+                <i class="icon-lock"></i>
+            </div>
+            
+            <h3><?php echo __('Have an account?'); ?></h3>
+            <p><?php echo __('Sign in or register for an account to track all your active support requests in one place.'); ?></p>
+
+            <div class="qs-side-actions">
+                <a href="login.php" class="qs-btn-outline-pill"><?php echo __('Sign In'); ?></a>
+                
+                <?php if ($cfg && $cfg->getClientRegistrationMode() !== 'disabled' && $cfg->isClientRegistrationEnabled()) { ?>
+                    <a href="account.php?do=create" class="qs-register-link"><?php echo __('Register for an account'); ?></a>
+                <?php } ?>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Help Section Row -->
+    <section class="qs-help-footer">
+        <div class="qs-divider"></div>
+        <div class="qs-help-content">
+            <div class="help-icon-outline">
+                <i class="icon-question-sign"></i>
+            </div>
+            <p>
+                <?php
+                if ($cfg->getClientRegistrationMode() != 'disabled' || !$cfg->isClientLoginRequired()) {
+                    echo sprintf(
+                    __("If this is your first time contacting us or you've lost the ticket number, please %s open a new ticket %s"),
+                        '<a href="open.php">','</a>');
+                } ?>
+            </p>
+        </div>
+    </section>
+
+    <!-- Minimal Muted Footer -->
+    <footer class="qs-footer">
+        <div class="qs-footer-links">
+            <a href="#"><?php echo __('Privacy Policy'); ?></a>
+            <a href="#"><?php echo __('Terms of Service'); ?></a>
+            <a href="#"><?php echo __('Contact Support'); ?></a>
+        </div>
+        <div class="qs-footer-copyright">
+            <?php echo sprintf(__('© %d Quantorus Support. All rights reserved.'), date('Y')); ?>
+        </div>
+    </footer>
 </div>
-</form>
-<br>
-<p>
-<?php
-if ($cfg->getClientRegistrationMode() != 'disabled'
-    || !$cfg->isClientLoginRequired()) {
-    echo sprintf(
-    __("If this is your first time contacting us or you've lost the ticket number, please %s open a new ticket %s"),
-        '<a href="open.php">','</a>');
-} ?>
-</p>
