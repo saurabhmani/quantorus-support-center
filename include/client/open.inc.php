@@ -114,20 +114,23 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         </div>
                         <div class="hidden-user-form-fields">
                             <?php
-                            $uform = UserForm::getUserForm()->getForm($_POST);
-                            // Map UserForm fields for JS synchronization
-                            $userFieldMap = array();
-                            foreach ($uform->getFields() as $f) {
-                                if ($f->get('name') == 'email' || (method_exists($f, 'getContactType') && $f->getContactType() == 'email'))
-                                    $userFieldMap['email'] = $f->getFormName();
-                                elseif ($f->get('name') == 'name' || (method_exists($f, 'getContactType') && $f->getContactType() == 'name'))
-                                    $userFieldMap['name'] = $f->getFormName();
-                                elseif ($f->get('name') == 'phone' || (method_exists($f, 'getContactType') && $f->getContactType() == 'phone'))
-                                    $userFieldMap['phone'] = $f->getFormName();
-                            }
-                            $uform->render(array('staff' => false, 'mode' => 'create'));
-                            ?>
-                            <script>var userFieldMap = <?php echo json_encode($userFieldMap); ?>;</script>
+                            $userForm = UserForm::getUserForm();
+                            if ($userForm) {
+                                $uform = $userForm->getForm($_POST);
+                                // Map UserForm fields for JS synchronization
+                                $userFieldMap = array();
+                                foreach ($uform->getFields() as $f) {
+                                    if ($f->get('name') == 'email' || (method_exists($f, 'getContactType') && $f->getContactType() == 'email'))
+                                        $userFieldMap['email'] = $f->getFormName();
+                                    elseif ($f->get('name') == 'name' || (method_exists($f, 'getContactType') && $f->getContactType() == 'name'))
+                                        $userFieldMap['name'] = $f->getFormName();
+                                    elseif ($f->get('name') == 'phone' || (method_exists($f, 'getContactType') && $f->getContactType() == 'phone'))
+                                        $userFieldMap['phone'] = $f->getFormName();
+                                }
+                                $uform->render(array('staff' => false, 'mode' => 'create'));
+                                ?>
+                                <script>var userFieldMap = <?php echo json_encode($userFieldMap); ?>;</script>
+                            <?php } ?>
                         </div>
                     <?php } else { ?>
                         <div class="form-field-group">

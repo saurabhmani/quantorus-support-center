@@ -142,8 +142,7 @@ if ($thisclient && $thisclient->isGuest() && $cfg->isClientRegistrationEnabled()
                     <h2><?php echo __('Conversation Thread'); ?></h2>
                 </div>
                 <?php
-                $email = $thisclient->getUserName();
-                $clientId = TicketUser::lookupByEmail($email)->getId();
+                $clientId = $thisclient->getId();
 
                 $ticket->getThread()->render(array('M', 'R', 'user_id' => $clientId), array(
                     'mode' => Thread::MODE_CLIENT,

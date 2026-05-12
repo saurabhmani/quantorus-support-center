@@ -35,6 +35,10 @@ if (osTicket::is_ie())
     <meta name="description" content="customer support platform">
     <meta name="keywords" content="osTicket, Customer support system, support ticket system">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php
+    if (!defined('ASSETS_PATH'))
+        define('ASSETS_PATH', ROOT_PATH . 'assets/default/');
+    ?>
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/osticket.css" media="screen">
     <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/theme.css" media="screen">
     <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/print.css" media="print">
@@ -106,13 +110,13 @@ if (osTicket::is_ie())
                 <?php if ($cfg && $cfg->getClientLogoId()) { ?>
                     <img
                         src="<?php echo ROOT_PATH; ?>logo.php"
-                        alt="<?php echo Format::htmlchars($ost->getConfig()->getTitle()); ?>"
+                        alt="<?php echo Format::htmlchars($cfg->getTitle()); ?>"
                         class="qs-navbar-logo"
                     >
                 <?php } else { ?>
                     <div class="qs-navbar-fallback">
                         <span class="qs-navbar-dot"></span>
-                        <span class="qs-navbar-title"><?php echo Format::htmlchars($ost->getConfig()->getTitle()); ?></span>
+                        <span class="qs-navbar-title"><?php echo Format::htmlchars($cfg->getTitle()); ?></span>
                     </div>
                 <?php } ?>
             </a>
@@ -141,10 +145,10 @@ if (osTicket::is_ie())
         
     <main class="qs-main">
 
-         <?php if($errors['err']) { ?>
+         <?php if(isset($errors['err']) && $errors['err']) { ?>
             <div id="msg_error"><?php echo $errors['err']; ?></div>
-         <?php }elseif($msg) { ?>
+         <?php }elseif(isset($msg) && $msg) { ?>
             <div id="msg_notice"><?php echo $msg; ?></div>
-         <?php }elseif($warn) { ?>
+         <?php }elseif(isset($warn) && $warn) { ?>
             <div id="msg_warning"><?php echo $warn; ?></div>
          <?php } ?>
