@@ -53,7 +53,9 @@ if ($_POST) {
     // requested for each attempt.
     if (!$ost->checkCSRFToken()) {
         $_SESSION['_staff']['auth']['msg'] = __('Valid CSRF Token Required');
+        session_write_close();
         Http::redirect($_SERVER['REQUEST_URI']);
+        exit;
     }
 
 }
@@ -81,6 +83,7 @@ if ($_POST && isset($_POST['userid'])) {
             exit;
         } else {
             error_log('[AUTH ERROR] Authentication failed');
+            session_write_close();
             Http::redirect('login.php');
             exit;
         }
@@ -114,6 +117,7 @@ elseif ($_POST
     } catch (ExpiredOTP $ex) {
         // Expired or too many attempts
         $thisstaff->logOut();
+        session_write_close();
         Http::redirect('login.php');
         exit;
     }
@@ -134,6 +138,7 @@ elseif (isset($_GET['do'])) {
         if ($bk = StaffAuthenticationBackend::getBackend($_GET['bk']))
             $bk->triggerAuth();
     }
+    session_write_close();
     Http::redirect('login.php');
     exit;
 }

@@ -16,7 +16,7 @@ if ($content) {
 
 <div class="login-wrapper">
     <!-- TOP ENTERPRISE BRANDING -->
-    <div class="login-branding" data-aos="fade-down">
+    <div class="login-branding">
         <div class="brand-icon-hub">
             <i class="fa-solid fa-shield-halved"></i>
         </div>
@@ -25,7 +25,7 @@ if ($content) {
     </div>
 
     <!-- PREMIUM GLASS LOGIN CARD -->
-    <div class="login-card-glass" data-aos="zoom-in" data-aos-delay="100">
+    <div class="login-card-glass">
         <div class="card-header">
             <h2><?php echo Format::display($title); ?></h2>
             <p><?php echo Format::display($body); ?></p>
@@ -59,10 +59,7 @@ if ($content) {
                 <?php } ?>
             </div>
 
-            <button class="btn-login-enterprise" type="submit">
-                <span><?php echo __('Log In'); ?></span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            <input type="submit" value="LOGIN TEST">
 
             <?php
             $ext_bks = array();
@@ -100,8 +97,3 @@ if ($content) {
 
 </div>
 
-<script>
-document.querySelector('#clientLogin')?.addEventListener('submit', () => {
-    console.log('[CLIENT AUTH] Native login submit');
-});
-</script>

@@ -54,8 +54,11 @@ if ($_POST && isset($_POST['luser'])) {
         if ($user instanceof ClientCreateRequest) {
             if ($cfg && $cfg->isClientRegistrationEnabled()) {
                 // Attempt to automatically register
-                if ($user->attemptAutoRegister())
+                if ($user->attemptAutoRegister()) {
+                    session_write_close();
                     Http::redirect('tickets.php');
+                    exit;
+                }
 
                 // Auto-registration failed. Show the user the info we have
                 $inc = 'register.inc.php';
@@ -68,10 +71,11 @@ if ($_POST && isset($_POST['luser'])) {
         }
         else {
             error_log('[CLIENT AUTH] Authentication success');
+            unset($_SESSION['_client']['auth']['dest']);
             session_write_close();
             error_log('[CLIENT AUTH] Redirect executing');
-            Http::redirect($_SESSION['_client']['auth']['dest']
-                ?: 'index.php');
+            Http::redirect(ROOT_PATH . 'index.php');
+            exit;
         }
     } elseif(!$errors['err']) {
         $errors['err'] = sprintf('%s - %s', __('Invalid username or password'), __('Please try again!'));
@@ -86,8 +90,11 @@ elseif ($_POST && isset($_POST['lticket'])) {
 
         // If email address verification is not required, then provide
         // immediate access to the ticket!
-        if (!$cfg->isClientEmailVerificationRequired())
+        if (!$cfg->isClientEmailVerificationRequired()) {
+            session_write_close();
             Http::redirect('tickets.php');
+            exit;
+        }
 
         // This will succeed as it is checked in the authentication backend
         $ticket = Ticket::lookupByNumber($_POST['lticket'], $_POST['lemail']);
@@ -122,14 +129,20 @@ elseif (isset($_GET['do'])) {
 }
 elseif ($user = UserAuthenticationBackend::processSignOn($errors, false)) {
     // Users from the ticket access link
-    if ($user && $user instanceof TicketUser && $user->getTicketId())
+    if ($user && $user instanceof TicketUser && $user->getTicketId()) {
+        session_write_close();
         Http::redirect('tickets.php?id='.$user->getTicketId());
+        exit;
+    }
     // Users imported from an external auth backend
     elseif ($user instanceof ClientCreateRequest) {
         if ($cfg && $cfg->isClientRegistrationEnabled()) {
             // Attempt to automatically register
-            if ($user->attemptAutoRegister())
+            if ($user->attemptAutoRegister()) {
+                session_write_close();
                 Http::redirect('tickets.php');
+                exit;
+            }
 
             // Unable to auto-register. Fill in what we have and let the
             // user complete the info
@@ -142,10 +155,11 @@ elseif ($user = UserAuthenticationBackend::processSignOn($errors, false)) {
     }
     elseif ($user instanceof AuthenticatedUser) {
         error_log('[CLIENT AUTH] Authentication success');
+        unset($_SESSION['_client']['auth']['dest']);
         session_write_close();
         error_log('[CLIENT AUTH] Redirect executing');
-        Http::redirect($_SESSION['_client']['auth']['dest']
-                ?: 'index.php');
+        Http::redirect(ROOT_PATH . 'index.php');
+        exit;
     }
 }
 
