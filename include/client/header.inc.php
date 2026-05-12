@@ -45,7 +45,6 @@ if (osTicket::is_ie())
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/jquery-ui-timepicker-addon.css" media="all">
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/thread.css" media="screen">
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css" media="screen">
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/modern-client.css" media="screen">
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css">
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css"/>
@@ -88,8 +87,10 @@ if (osTicket::is_ie())
     }
     ?>
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/modern-register.css?v=7">
+    <!-- Modern Enterprise UI Styles (Load Last for Priority) -->
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/modern-client.css?v=<?php echo time(); ?>" media="screen">
 </head>
-<body>
+<body class="modern-client-ui">
     <div id="container">
         <?php
         if($ost->getError())

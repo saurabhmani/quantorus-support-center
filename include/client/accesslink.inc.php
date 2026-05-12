@@ -10,23 +10,6 @@ else
     $button = __("View Ticket");
 ?>
 <div class="qs-status-page">
-    <!-- Minimal Navbar -->
-    <nav class="qs-navbar">
-        <div class="qs-nav-container">
-            <div class="qs-nav-logo">
-                <span class="qs-logo-text">Quantorus</span>
-                <span class="qs-logo-sub">Support</span>
-            </div>
-            <div class="qs-nav-center">
-                <a href="index.php" class="qs-nav-link"><?php echo __('Support Home'); ?></a>
-                <a href="kb/index.php" class="qs-nav-link"><?php echo __('Knowledge Base'); ?></a>
-                <a href="open.php" class="qs-nav-link"><?php echo __('Open Ticket'); ?></a>
-            </div>
-            <div class="qs-nav-right">
-                <a href="login.php" class="qs-nav-signin-btn"><?php echo __('Sign In'); ?></a>
-            </div>
-        </div>
-    </nav>
 
     <!-- Airy Hero Section -->
     <header class="qs-hero">
@@ -101,33 +84,4 @@ else
         </aside>
     </main>
 
-    <!-- Help Section Row -->
-    <section class="qs-help-footer">
-        <div class="qs-divider"></div>
-        <div class="qs-help-content">
-            <div class="help-icon-outline">
-                <i class="icon-question-sign"></i>
-            </div>
-            <p>
-                <?php
-                if ($cfg->getClientRegistrationMode() != 'disabled' || !$cfg->isClientLoginRequired()) {
-                    echo sprintf(
-                    __("If this is your first time contacting us or you've lost the ticket number, please %s open a new ticket %s"),
-                        '<a href="open.php">','</a>');
-                } ?>
-            </p>
-        </div>
-    </section>
-
-    <!-- Minimal Muted Footer -->
-    <footer class="qs-footer">
-        <div class="qs-footer-links">
-            <a href="#"><?php echo __('Privacy Policy'); ?></a>
-            <a href="#"><?php echo __('Terms of Service'); ?></a>
-            <a href="#"><?php echo __('Contact Support'); ?></a>
-        </div>
-        <div class="qs-footer-copyright">
-            <?php echo sprintf(__('© %d Quantorus Support. All rights reserved.'), date('Y')); ?>
-        </div>
-    </footer>
 </div>
