@@ -2,71 +2,106 @@
 if(!defined('OSTCLIENTINC')) die('Access Denied');
 
 $email=Format::input($_POST['luser']?:$_GET['e']);
-$passwd=Format::input($_POST['lpasswd']?:$_GET['t']);
+$passwd = '';
 
 $content = Page::lookupByType('banner-client');
-
 if ($content) {
     list($title, $body) = $ost->replaceTemplateVariables(
         array($content->getLocalName(), $content->getLocalBody()));
 } else {
-    $title = __('Sign In');
-    $body = __('To better serve you, we encourage our clients to register for an account and verify the email address we have on record.');
+    $title = __('Welcome Back');
+    $body = __('Sign in to your enterprise support dashboard');
 }
-
 ?>
-<h1><?php echo Format::display($title); ?></h1>
-<p><?php echo Format::display($body); ?></p>
-<form action="login.php" method="post" id="clientLogin">
-    <?php csrf_token(); ?>
-<div style="display:table-row">
-    <div class="login-box">
-    <strong><?php echo Format::htmlchars($errors['login']); ?></strong>
-    <div>
-        <input id="username" placeholder="<?php echo __('Email or Username'); ?>" type="text" name="luser" size="30" value="<?php echo $email; ?>" class="nowarn">
-    </div>
-    <div>
-        <input id="passwd" placeholder="<?php echo __('Password'); ?>" type="password" name="lpasswd" size="30" maxlength="128" value="<?php echo $passwd; ?>" class="nowarn"></td>
-    </div>
-    <p>
-        <input class="btn" type="submit" value="<?php echo __('Sign In'); ?>">
-<?php if ($suggest_pwreset) { ?>
-        <a style="padding-top:4px;display:inline-block;" href="pwreset.php"><?php echo __('Forgot My Password'); ?></a>
-<?php } ?>
-    </p>
-    </div>
-    <div style="display:table-cell;padding: 15px;vertical-align:top">
-<?php
 
-$ext_bks = array();
-foreach (UserAuthenticationBackend::allRegistered() as $bk)
-    if ($bk instanceof ExternalAuthentication)
-        $ext_bks[] = $bk;
+<div class="login-wrapper">
+    <!-- TOP ENTERPRISE BRANDING -->
+    <div class="login-branding" data-aos="fade-down">
+        <div class="brand-icon-hub">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h1 class="brand-title"><?php echo $ost->getConfig()->getTitle(); ?></h1>
+        <p class="brand-subtitle"></p>
+    </div>
 
-if (count($ext_bks)) {
-    foreach ($ext_bks as $bk) { ?>
-<div class="external-auth"><?php $bk->renderExternalLink(); ?></div><?php
-    }
-}
-if ($cfg && $cfg->isClientRegistrationEnabled()) {
-    if (count($ext_bks)) echo '<hr style="width:70%"/>'; ?>
-    <div style="margin-bottom: 5px">
-    <?php echo __('Not yet registered?'); ?> <a href="account.php?do=create"><?php echo __('Create an account'); ?></a>
+    <!-- PREMIUM GLASS LOGIN CARD -->
+    <div class="login-card-glass" data-aos="zoom-in" data-aos-delay="100">
+        <div class="card-header">
+            <h2><?php echo Format::display($title); ?></h2>
+            <p><?php echo Format::display($body); ?></p>
+        </div>
+
+        <form action="login.php" method="post" id="clientLogin">
+            <?php csrf_token(); ?>
+            
+            <?php if ($errors['login']) { ?>
+                <div class="login-error-alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <?php echo Format::htmlchars($errors['login']); ?>
+                </div>
+            <?php } ?>
+
+            <div class="input-stack">
+                <div class="input-group-premium">
+                    <div class="input-icon"><i class="fa-solid fa-user-tie"></i></div>
+                    <input id="username" placeholder="<?php echo __('Email or Username'); ?>" type="text" name="luser" value="<?php echo $email; ?>" class="nowarn" required>
+                </div>
+
+                <div class="input-group-premium">
+                    <div class="input-icon"><i class="fa-solid fa-lock-keyhole"></i></div>
+                    <input id="passwd" placeholder="<?php echo __('Password'); ?>" type="password" name="lpasswd" maxlength="128" value="" class="nowarn" required>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <?php if ($suggest_pwreset) { ?>
+                    <a href="pwreset.php" class="forgot-link"><?php echo __('Forgot Password?'); ?></a>
+                <?php } ?>
+            </div>
+
+            <button class="btn-login-enterprise" type="submit">
+                <span><?php echo __('Log In'); ?></span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+            <?php
+            $ext_bks = array();
+            foreach (UserAuthenticationBackend::allRegistered() as $bk)
+                if ($bk instanceof ExternalAuthentication)
+                    $ext_bks[] = $bk;
+
+            if (count($ext_bks)) {
+                echo '<div class="external-auth-premium">';
+                foreach ($ext_bks as $bk) { 
+                    $bk->renderExternalLink(); 
+                }
+                echo '</div>';
+            }
+            ?>
+
+            <div class="card-footer-divider">
+                <?php if ($cfg && $cfg->isClientRegistrationEnabled()) { ?>
+                    <span><?php echo __('New to our platform?'); ?></span>
+                    <a href="account.php?do=create" class="create-account-link"><?php echo __('Create Account'); ?></a>
+                <?php } else { ?>
+                    <span><?php echo __('Need support?'); ?></span>
+                <?php } ?>
+            </div>
+            
+            <?php
+            if ($cfg->getClientRegistrationMode() != 'disabled' || !$cfg->isClientLoginRequired()) {
+                echo '<div style="margin-top: 15px; text-align: center; font-size: 0.9em;">';
+                echo sprintf(__('If this is your first time contacting us or you\'ve lost the ticket number, please %s open a new ticket %s'), '<a href="open.php" class="forgot-link">', '</a>');
+                echo '</div>';
+            } 
+            ?>
+        </form>
     </div>
-<?php } ?>
-    <div>
-    <b><?php echo __("I'm an agent"); ?></b> —
-    <a href="<?php echo ROOT_PATH; ?>scp/"><?php echo __('sign in here'); ?></a>
-    </div>
-    </div>
+
 </div>
-</form>
-<br>
-<p>
-<?php
-if ($cfg->getClientRegistrationMode() != 'disabled'
-    || !$cfg->isClientLoginRequired()) {
-    echo sprintf(__('If this is your first time contacting us or you\'ve lost the ticket number, please %s open a new ticket %s'),
-        '<a href="open.php">', '</a>');
-} ?>
-</p>
+
+<script>
+document.querySelector('#clientLogin')?.addEventListener('submit', () => {
+    console.log('[CLIENT AUTH] Native login submit');
+});
+</script>

@@ -1,82 +1,150 @@
 <?php
-/*********************************************************************
-    index.php
-
-    Helpdesk landing page. Please customize it to fit your needs.
-
-    Peter Rotich <peter@osticket.com>
-    Copyright (c)  2006-2013 osTicket
-    http://www.osticket.com
-
-    Released under the GNU General Public License WITHOUT ANY WARRANTY.
-    See LICENSE.TXT for details.
-
-    vim: expandtab sw=4 ts=4 sts=4:
-**********************************************************************/
 require('client.inc.php');
-
 require_once INCLUDE_DIR . 'class.page.php';
 
 $section = 'home';
 require(CLIENTINC_DIR.'header.inc.php');
 ?>
-<div id="landing_page">
-<?php include CLIENTINC_DIR.'templates/sidebar.tmpl.php'; ?>
-<div class="main-content">
-<?php
-if ($cfg && $cfg->isKnowledgebaseEnabled()) { ?>
-<div class="search-form">
-    <form method="get" action="kb/faq.php">
-    <input type="hidden" name="a" value="search"/>
-    <input type="text" name="q" class="search" placeholder="<?php echo __('Search our knowledge base'); ?>"/>
-    <button type="submit" class="green button"><?php echo __('Search'); ?></button>
-    </form>
-</div>
-<?php } ?>
-<div class="thread-body">
-<?php
-    if($cfg && ($page = $cfg->getLandingPage()))
-        echo $page->getBodyWithImages();
-    else
-        echo  '<h1>'.__('Welcome to the Support Center').'</h1>';
-    ?>
-    </div>
-</div>
-<div class="clear"></div>
 
-<div>
-<?php
-if($cfg && $cfg->isKnowledgebaseEnabled()){
-    //FIXME: provide ability to feature or select random FAQs ??
-?>
-<br/><br/>
-<?php
-$cats = Category::getFeatured();
-if ($cats->all()) { ?>
-<h1><?php echo __('Featured Knowledge Base Articles'); ?></h1>
-<?php
-}
+<div id="atlas_saas_portal">
+    
+    <!-- HERO SECTION -->
+    <div class="hero-wrapper">
+        <div class="container-enterprise">
+            <div class="hero-panel">
+                <!-- Left: Messaging -->
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <i class="fas fa-shield-check"></i> CUSTOMER SUPPORT PORTAL
+                    </div>
+                    <h1 class="hero-title">
+                        Welcome to the <br>
+                        <span>Support Center</span>
+                    </h1>
+                    <p class="hero-description">
+                        Our professional engineering team is ready to assist you. Access documentation, track nodes, and resolve technical issues with ease.
+                    </p>
+                    <div class="info-strip">
+                        <div class="status-dot"></div>
+                        Real-time platform availability active
+                    </div>
+                </div>
 
-    foreach ($cats as $C) { ?>
-    <div class="featured-category front-page">
-        <i class="icon-folder-open icon-2x"></i>
-        <div class="category-name">
-            <?php echo $C->getName(); ?>
+                <!-- Right: Actions -->
+                <div class="action-stack">
+                    <a href="open.php" class="support-action action-blue">
+                        <div class="action-icon-box">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="action-info">
+                            <h3>Open a New Ticket</h3>
+                            <p>Submit a request to our engineers</p>
+                        </div>
+                    </a>
+
+                    <a href="view.php" class="support-action action-green">
+                        <div class="action-icon-box">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <div class="action-info">
+                            <h3>Check Ticket Status</h3>
+                            <p>Track your active support nodes</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
-<?php foreach ($C->getTopArticles() as $F) { ?>
-        <div class="article-headline">
-            <div class="article-title"><a href="<?php echo ROOT_PATH;
-                ?>kb/faq.php?id=<?php echo $F->getId(); ?>"><?php
-                echo $F->getQuestion(); ?></a></div>
-            <div class="article-teaser"><?php echo $F->getTeaser(); ?></div>
-        </div>
-<?php } ?>
     </div>
-<?php
-    }
-}
-?>
-</div>
+
+    <div class="framework-section">
+        <div class="container-enterprise">
+            <div class="framework-card">
+                <div class="framework-header">
+                </div>
+                <div class="framework-grid">
+                    <!-- Item 1 -->
+                    <div class="framework-item">
+                        <div class="item-icon"><i class="fas fa-paper-plane"></i></div>
+                        <div class="item-content">
+                            <h3>Submit Tickets</h3>
+                            <p>Direct entry into our engineering resolution pipeline for fast fixes.</p>
+                        </div>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="framework-item">
+                        <div class="item-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="item-content">
+                            <h3>Track Progress</h3>
+                            <p>Real-time visibility into the current stage of your support request.</p>
+                        </div>
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="framework-item">
+                        <div class="item-icon"><i class="fas fa-history"></i></div>
+                        <div class="item-content">
+                            <h3>View History</h3>
+                            <p>Access your full repository of past resolutions and interactions.</p>
+                        </div>
+                    </div>
+                    <!-- Item 4 -->
+                    <div class="framework-item">
+                        <div class="item-icon"><i class="fas fa-lock"></i></div>
+                        <div class="item-content">
+                            <h3>Secure Support</h3>
+                            <p>Enterprise-grade encryption for all shared data and attachments.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURE GRID SECTION -->
+    <div class="features-wrapper">
+        <div class="container-enterprise">
+            <div class="section-head">
+                <h2>Everything you need for fast resolution</h2>
+                <p>Our professional support framework ensures you have all the tools for a seamless experience.</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Helpful Docs -->
+                <a href="kb/index.php" class="feature-card">
+                    <div class="feature-icon icon-blue"><i class="fas fa-book-open"></i></div>
+                    <h3>Helpful Docs</h3>
+                    <p>Search our comprehensive knowledge base for instant answers and technical guides.</p>
+                </a>
+
+                <!-- Community -->
+                <a href="#" class="feature-card">
+                    <div class="feature-icon icon-green"><i class="fas fa-users"></i></div>
+                    <h3>Community</h3>
+                    <p>Join the conversation with other users and developers in our official hub.</p>
+                </a>
+
+                <!-- System Status -->
+                <a href="#" class="feature-card">
+                    <div class="feature-icon icon-purple"><i class="fas fa-signal"></i></div>
+                    <h3>System Status</h3>
+                    <p>Real-time updates on our global infrastructure and service availability.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ASSISTANCE SECTION -->
+    <div class="assistance-section">
+        <div class="container-enterprise">
+            <div class="assistance-card">
+                <h2>Still need assistance?</h2>
+                <p>Our support team is available 24/7 to help you with any technical challenges or account inquiries.</p>
+                <a href="open.php" class="btn-priority">
+                    Get Priority Support
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <?php require(CLIENTINC_DIR.'footer.inc.php'); ?>

@@ -16,6 +16,11 @@ header("Content-Security-Policy: frame-ancestors ".$cfg->getAllowIframes()."; sc
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-16x16.png" sizes="16x16" />
+    
+    <!-- PREMIUM DESIGN TOKENS & FONTS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>scp/css/atlas-refine.css?v=99">
+    
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.7.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -23,5 +28,13 @@ header("Content-Security-Policy: frame-ancestors ".$cfg->getAllowIframes()."; sc
          });
     </script>
 </head>
-<body id="loginBody">
+<body id="loginBody" class="modern-body login-page-active">
+    <!-- INSTITUTIONAL DYNAMIC BACKGROUND ENGINE -->
+    <div id="dynamic-bg-container">
+        <div class="bg-overlay"></div>
+        <video id="bg-video" autoplay muted loop playsinline style="display:none;">
+            <source src="<?php echo ROOT_PATH; ?>assets/login-bg/background-video.mp4" type="video/mp4">
+        </video>
+    </div>
+    <script src="<?php echo ROOT_PATH; ?>js/login-background.js"></script>
 

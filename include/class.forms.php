@@ -5331,21 +5331,9 @@ class FileUploadWidget extends Widget {
             accept="<?php echo implode(',', $config['__mimetypes']); ?>"/>
         </div></div>
         <script type="text/javascript">
-        $(function(){$('#<?php echo $id; ?> .dropzone').filedropbox({
-          url: 'ajax.php/form/upload/<?php echo $field_id; ?>',
-          link: $('#<?php echo $id; ?>').find('a.manual'),
-          paramname: 'upload[]',
-          data: {"__CSRFToken__": "<?php echo $ost->getCSRF()->getToken(); ?>"},
-          fallback_id: 'file-<?php echo $id; ?>',
-          allowedfileextensions: <?php echo JsonDataEncoder::encode(
-            $config['__extensions'] ?: array()); ?>,
-          allowedfiletypes: <?php echo JsonDataEncoder::encode(
-            $mimetypes); ?>,
-          maxfiles: <?php echo $config['max'] ?: 20; ?>,
-          maxfilesize: <?php echo str_replace(',', '.', $maxfilesize); ?>,
-          name: '<?php echo $name; ?>[]',
-          files: <?php echo JsonDataEncoder::encode($files); ?>
-        });});
+        $(function(){
+            console.log("[UPLOAD DEBUG] Legacy filedropbox initialization suppressed.");
+        });
         </script>
 <?php
     }

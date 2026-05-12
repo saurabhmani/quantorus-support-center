@@ -58,35 +58,22 @@ if ($_POST) {
 
 }
 if ($_POST && isset($_POST['userid'])) {
-    error_log('[AUTH] Login started');
-    error_log('[AUTH DEBUG] userid='.$_POST['userid']);
     // Lookup support backends for this staff
     $username = trim($_POST['userid']);
     if (Validator::is_userid($username, $errors['err'], false)
         && ($user = StaffAuthenticationBackend::process($username,
             substr($_POST['passwd'], 0, 128), $errors))) {
         
-        if ($user) {
-            error_log('[AUTH DEBUG] User exists');
-            error_log('[AUTH DEBUG] User object='.print_r($user,true));
-        }
-
-        if ($user && $user->isValid()) {
-            error_log('[AUTH DEBUG] User valid');
-            error_log('[AUTH] Session created');
-            error_log('[AUTH DEBUG] Redirecting to SCP');
-            error_log('[AUTH] Redirect success');
+        if ($user->isValid()) {
             session_write_close();
             Http::redirect(ROOT_PATH . 'scp/');
             exit;
         } else {
-            error_log('[AUTH ERROR] Authentication failed');
             Http::redirect('login.php');
             exit;
         }
     }
 
-    error_log('[AUTH ERROR] Authentication failed');
     $msg = $errors['err'] ?: __('Invalid login');
     $show_reset = true;
 

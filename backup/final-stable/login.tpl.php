@@ -67,10 +67,10 @@ if ($thisstaff && $thisstaff->is2FAPending())
 </div>
 
 <script>
-    const loginForm = document.querySelector('#login');
+    const loginForm = document.getElementById('login');
     if (loginForm) {
-        loginForm.addEventListener('submit', () => {
-            console.log('[AUTH] Native SCP login submit');
+        loginForm.addEventListener('submit', function() {
+            // Native submission
         });
     }
 </script>

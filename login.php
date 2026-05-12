@@ -67,8 +67,11 @@ if ($_POST && isset($_POST['luser'])) {
             }
         }
         else {
+            error_log('[CLIENT AUTH] Authentication success');
+            session_write_close();
+            error_log('[CLIENT AUTH] Redirect executing');
             Http::redirect($_SESSION['_client']['auth']['dest']
-                ?: 'tickets.php');
+                ?: 'index.php');
         }
     } elseif(!$errors['err']) {
         $errors['err'] = sprintf('%s - %s', __('Invalid username or password'), __('Please try again!'));
@@ -138,8 +141,11 @@ elseif ($user = UserAuthenticationBackend::processSignOn($errors, false)) {
         }
     }
     elseif ($user instanceof AuthenticatedUser) {
+        error_log('[CLIENT AUTH] Authentication success');
+        session_write_close();
+        error_log('[CLIENT AUTH] Redirect executing');
         Http::redirect($_SESSION['_client']['auth']['dest']
-                ?: 'tickets.php');
+                ?: 'index.php');
     }
 }
 
